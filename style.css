@@ -49,15 +49,15 @@ ul.l li:before{content:"▸";position:absolute;left:4px;color:#8bb4ff}
 .note{font-size:.8rem;opacity:.7}
 @media(max-width:760px){.hero{grid-template-columns:1fr}.glass{padding:34px 26px}}
 .qr {
-  width: 220px;                 /* overall size of the white card */
+  width: 220px;               
   margin: 0 auto 24px;
   position: relative;
   background: white;
   border-radius: 8px;
   box-shadow: 
-    8px 8px 0 rgba(255,255,255,0.9),   /* the stacked paper effect */
+    8px 8px 0 rgba(255,255,255,0.9),   
     0 10px 30px rgba(0,0,0,0.25);
-  padding: 14px;                  /* space between QR and edge of white card */
+  padding: 14px;                
 }
 
 .qr img {
@@ -66,3 +66,6 @@ ul.l li:before{content:"▸";position:absolute;left:4px;color:#8bb4ff}
   height: auto;
   border-radius: 4px;
 }
+.av{position:relative;overflow:hidden}
+.av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;display:block}
+.about-desc{font-family:'Fira Mono',monospace;line-height:1.8;max-width:760px;margin:28px 0 8px}
