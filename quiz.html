@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Mono&family=Sora:wght@400;700;800&display=swap">
+<title>Spot the Scam | Beyond The Screen</title>
+<style>
+  :root{
+    --blue:#1f5fe0; --indigo:#4a4dff; --panel:#111; --row:rgba(255,255,255,.05);
+    --line:rgba(255,255,255,.18); --text:#fff; --muted:#b4bbd4;
+    --good:#2fbf71; --bad:#e5484d;
+  }
+  *{box-sizing:border-box}
+  html{background:#000}
+  body{
+    margin:0;min-height:100vh;color:var(--text);font-family:'Sora',system-ui,sans-serif;line-height:1.55;
+    background:linear-gradient(180deg,#8fb8ea 0,#1f63e3 220px,#02050f 620px,#000 100%) no-repeat;
+    background-color:#000;overflow-x:hidden;
+  }
+
+
+  /* Decorative rings, same as the homepage */
+  .ring{position:absolute;width:190px;height:190px;border-radius:52px;border:38px solid;
+        border-color:#3d6cf2 #2f56d6 #7da3f6 #1f3fb8;pointer-events:none;z-index:0}
+
+  main{position:relative;max-width:760px;margin:0 auto;padding:56px 20px 80px}
+  .panel{position:relative;z-index:1;background:linear-gradient(180deg,#171717,#0d0d0d);border:1px solid var(--line);border-radius:44px;padding:36px 32px}
+
+  .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-family:'Fira Mono',monospace;font-size:.9rem;color:var(--muted)}
+  .top a{color:#fff;text-decoration:none}
+  .top a:hover{text-decoration:underline}
+  .progress{height:8px;background:rgba(255,255,255,.12);border-radius:99px;overflow:hidden;margin-bottom:26px}
+  .progress i{display:block;height:100%;width:0;background:var(--indigo);border-radius:99px;transition:width .3s}
+
+  h1{font-size:2.2rem;font-weight:800;line-height:1.1;margin:0 0 8px;letter-spacing:-.01em}
+  .sub{font-family:'Fira Mono',monospace;color:var(--muted);margin:0 0 24px}
+
+  .msg{background:var(--row);border:1px solid var(--line);border-radius:18px;padding:20px;margin-bottom:20px;font-family:'Fira Mono',monospace}
+  .msg .from{font-size:.8rem;color:var(--muted);margin-bottom:10px;word-break:break-all}
+  .msg .body{font-size:1.02rem}
+
+  .choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  button,.pill{font:inherit;font-family:'Sora',sans-serif;font-weight:700;border:0;border-radius:999px;padding:14px 20px;cursor:pointer;color:#fff;text-align:center;text-decoration:none;display:inline-block;transition:transform .1s,filter .2s}
+  button:hover,.pill:hover{transform:translateY(-1px);filter:brightness(1.1)}
+  button:focus-visible,.pill:focus-visible{outline:3px solid #fff;outline-offset:2px}
+  .scam{background:var(--bad)}
+  .legit{background:var(--good)}
+  .next{background:var(--indigo);width:100%;margin-top:16px}
+  .ghost{background:rgba(255,255,255,.12)}
+  .choices.locked button{opacity:.4;pointer-events:none}
+
+  .feedback{margin-top:16px;border:1px solid var(--line);border-left-width:5px;background:var(--row);padding:14px 18px;border-radius:14px;font-family:'Fira Mono',monospace;font-size:.95rem}
+  .feedback.right{border-left-color:var(--good)}
+  .feedback.wrong{border-left-color:var(--bad)}
+  .feedback strong{display:block;margin-bottom:4px;font-family:'Sora',sans-serif}
+  .tag{display:inline-block;font-size:.78rem;background:rgba(255,255,255,.14);padding:2px 10px;border-radius:999px;margin-top:10px}
+  .hidden{display:none}
+
+  /* Result and prize */
+  .result{text-align:center}
+  .score{font-size:3.2rem;font-weight:800;margin:4px 0}
+  .prize{margin:22px 0;padding:22px 18px;border-radius:22px;border:2px dashed #ffd24a;background:rgba(255,210,74,.08)}
+  .prize h2{margin:0 0 6px;font-size:1.5rem;color:#ffd24a}
+  .prize p{margin:0;font-family:'Fira Mono',monospace}
+  .tips{text-align:left;font-family:'Fira Mono',monospace;color:var(--muted);padding-left:20px;margin:0 0 6px}
+  .row{display:flex;gap:12px;margin-top:20px}
+  .row>*{flex:1}
+  .row .next{margin-top:0}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media (max-width:520px){
+    .panel{padding:26px 18px;border-radius:30px}
+    h1{font-size:1.7rem}
+    .choices,.row{grid-template-columns:1fr;flex-direction:column}
+    .ring{display:none}
+  }
+</style>
+</head>
+<body>
+
+<main>
+  <div class="ring" style="right:-60px;top:10px"></div>
+  <div class="ring" style="left:-90px;top:420px"></div>
+
+  <div class="panel">
+    <div class="top"><a href="index.html">← Back to home</a><span id="counter"></span></div>
+    <div class="progress"><i id="bar"></i></div>
+
+    <section id="game">
+      <h1>Scam or legit?</h1>
+      <p class="sub">Read each message and decide if it is a scam.</p>
+      <div class="msg">
+        <div class="from" id="from"></div>
+        <div class="body" id="body"></div>
+      </div>
+      <div class="choices" id="choices">
+        <button class="scam" data-answer="scam">Scam</button>
+        <button class="legit" data-answer="legit">Legit</button>
+      </div>
+      <div class="feedback hidden" id="feedback" aria-live="polite">
+        <strong id="verdict"></strong>
+        <span id="explain"></span><br>
+        <span class="tag" id="tag"></span>
+      </div>
+      <button class="next hidden" id="next">Next</button>
+    </section>
+
+    <section id="result" class="result hidden">
+      <h1>Quiz complete!</h1>
+      <div class="score" id="score"></div>
+      <p id="rating" style="font-family:'Fira Mono',monospace;margin:0"></p>
+
+      <div class="prize">
+        <h2>Congrats! You get a prize from our booth!</h2>
+        <p>Show this screen at the Beyond The Screen booth to claim it.</p>
+      </div>
+
+      <ul class="tips">
+        <li>Check the source and the sender's real address.</li>
+        <li>Be careful with urgency, free prizes, and threats.</li>
+        <li>Never share OTPs, passwords, or card details.</li>
+        <li>Pause, verify, then post or click.</li>
+      </ul>
+      <div class="row">
+        <button class="next" id="retry" type="button">Play again</button>
+        <a class="pill ghost" href="index.html">Back to home</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+const questions = [
+  { from:"SMS from: +63 912 000 0000",
+    body:"Congratulations! You won a free phone. Click now to claim before it expires in 10 minutes: bit.ly/claim-now",
+    scam:true, tag:"Fake prize + urgency",
+    why:"You can't win a contest you never joined. The countdown pushes you to click without thinking." },
+  { from:"Email from: support@paypa1-security.com",
+    body:"Your account has been limited. Verify your login within 24 hours or it will be closed.",
+    scam:true, tag:"Phishing / lookalike domain",
+    why:"The domain uses the number 1 instead of the letter l. Real companies don't threaten to close accounts by email." },
+  { from:"Message from: your friend (new account)",
+    body:"Hi! This is my new number, my old one was lost. Can you send me 2,000 pesos via e-wallet? I'll pay you back tomorrow.",
+    scam:true, tag:"Impersonation",
+    why:"Scammers copy a friend's name and photo. Call your friend on their old number to confirm before sending money." },
+  { from:"Email from: no-reply@yourschool.edu.ph",
+    body:"Your class schedule for next semester is now posted. Log in to the official student portal you normally use to view it.",
+    scam:false, tag:"Looks safe",
+    why:"It comes from a known school address, has no threat or rush, and tells you to use the portal you already know instead of a link." },
+  { from:"Facebook post: Breaking News Daily",
+    body:"SHOCKING: Government to ban the internet next week! SHARE before they delete this!",
+    scam:true, tag:"Misinformation",
+    why:"Emotional wording, no source, and a demand to share are classic signs. Check if trusted news sites report the same thing." },
+  { from:"Call from: \"Bank Security Department\"",
+    body:"We detected a suspicious transaction. To cancel it, please tell us the OTP we just sent to your phone.",
+    scam:true, tag:"Vishing / OTP theft",
+    why:"A bank will never ask for your OTP. That code lets the caller approve the transaction themselves." },
+  { from:"Email from: orders@official-store.com",
+    body:"Thanks for your order #48213. It will arrive in 3 to 5 days. You can track it from the Orders page in the app. No action needed.",
+    scam:false, tag:"Looks safe",
+    why:"It matches an order you actually placed, asks for nothing, and points you to the app instead of a link. If you didn't order anything, treat it as suspicious." },
+  { from:"Job offer on Messenger",
+    body:"Earn 5,000 pesos a day just by liking videos! No experience needed. Pay a 500 peso registration fee to start.",
+    scam:true, tag:"Fake job / advance fee",
+    why:"Real jobs don't charge you to get hired, and no one pays that much for liking videos." }
+];
+
+let i = 0, score = 0, order = [];
+const $ = id => document.getElementById(id);
+
+function shuffle(a){ for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]} return a; }
+
+function start(){
+  i = 0; score = 0; order = shuffle(questions.slice());
+  $("result").classList.add("hidden");
+  $("game").classList.remove("hidden");
+  show();
+}
+
+function show(){
+  const q = order[i];
+  $("from").textContent = q.from;
+  $("body").textContent = q.body;
+  $("counter").textContent = "Question " + (i+1) + " of " + order.length;
+  $("bar").style.width = (i/order.length*100) + "%";
+  $("choices").classList.remove("locked");
+  $("feedback").classList.add("hidden");
+  $("next").classList.add("hidden");
+  $("next").textContent = (i === order.length-1) ? "See result" : "Next";
+}
+
+function answer(choice){
+  const q = order[i];
+  const correct = (choice === "scam") === q.scam;
+  if(correct) score++;
+  $("choices").classList.add("locked");
+  const fb = $("feedback");
+  fb.className = "feedback " + (correct ? "right" : "wrong");
+  $("verdict").textContent = (correct ? "Correct. " : "Not quite. ") + (q.scam ? "This is a scam." : "This looks legit.");
+  $("explain").textContent = q.why;
+  $("tag").textContent = q.tag;
+  $("next").classList.remove("hidden");
+  $("next").focus();
+}
+
+function finish(){
+  $("bar").style.width = "100%";
+  $("game").classList.add("hidden");
+  $("result").classList.remove("hidden");
+  $("counter").textContent = "";
+  $("score").textContent = score + " / " + order.length;
+  const pct = score/order.length;
+  $("rating").textContent =
+    pct === 1 ? "Perfect! You think before you click." :
+    pct >= 0.7 ? "Great job. You spot most scams, keep staying alert." :
+    pct >= 0.4 ? "Not bad, but some scams slipped through. Review the tips below." :
+    "Scammers got you this time. Learn the red flags below and try again.";
+  window.scrollTo({top:0});
+}
+
+document.querySelectorAll("[data-answer]").forEach(b => b.addEventListener("click", () => answer(b.dataset.answer)));
+$("next").addEventListener("click", () => { i++; (i < order.length) ? show() : finish(); });
+$("retry").addEventListener("click", start);
+start();
+</script>
+<script src="nav.js"></script>
+</body>
+</html>

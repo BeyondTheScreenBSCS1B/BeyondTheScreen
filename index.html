@@ -1,0 +1,64 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Mono&family=Sora:wght@400;700;800&display=swap"><link rel="stylesheet" href="style.css"><title>Beyond The Screen</title>
+<style>
+  /* Gate minigame (you can move this into style.css) */
+  .gate{margin-top:18px;padding:16px;border-radius:14px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.2);text-align:center;width:100%}
+  .gate p{margin:0 0 12px;font-weight:700}
+  .gate-btns{display:flex;gap:10px}
+  .gate-btns button{flex:1;font:inherit;font-weight:700;color:#fff;border:0;border-radius:10px;padding:12px;cursor:pointer;transition:transform .1s}
+  .gate-btns button:hover{transform:translateY(-1px)}
+  .gate-btns button:focus-visible{outline:3px solid #fff;outline-offset:2px}
+  .gate-btns .yes{background:#2fbf71}
+  .gate-btns .no{background:#e5484d}
+</style>
+</head><body>
+<div class="wrap">
+<div class="ring" style="right:-50px;top:-20px"></div><div class="ring" style="left:-80px;top:300px"></div>
+<section class="hero">
+<div class="glass"><h1>Beyond The Screen</h1><p>THINK BEFORE YOU CLICK</p><a class="btn" href="about.html">About Us</a></div>
+<div class="screen"><span><b>✔</b> Check the source</span><span><b>✔</b> Check the date</span><span><b>✔</b> Do trusted sites report it too?</span><span><b>✔</b> Free prize! Click now!</span>
+
+<div class="gate" id="gate">
+  <p id="gateText" aria-live="polite">Do you think you can protect yourself on the internet?</p>
+  <div class="gate-btns">
+    <button type="button" class="yes" id="gateYes">Yes</button>
+    <button type="button" class="no" id="gateNo">No</button>
+  </div>
+</div>
+
+</div>
+</section>
+<p class="lead">Our advocacy campaign that aims to promote digital awareness, responsible technology use, and critical thinking in today's rapidly evolving digital world.</p>
+<section class="cards">
+<div class="card"><h3>Falling for fake news?</h3><p>Not everything online is true. We teach you to check the source, the date, and whether other trusted sites report the same story.</p></div>
+<div class="card"><h3>Too good to be true?</h3><p>Free prizes, urgent messages, and “limited time offers” are classic scam tricks. We show you the red flags before you click.</p></div>
+<div class="card"><h3>Not sure what to share?</h3><p>One share can spread a lie fast. We promote pause, verify, then post, so you help stop misinformation instead of spreading it.</p></div>
+</section>
+<h2 class="center">Explore the campaign</h2>
+<section class="cards explore">
+<a class="card dark" href="about.html"><h3>About Us</h3><small>Meet the team and the mission</small></a>
+<a class="card dark" href="audience.html"><h3>Target Audience</h3><small>Who we're helping and why</small></a>
+<a class="card dark" href="phase1.html"><h3>Phase 1: Needs Assessment</h3><small>Survey, findings and our solution</small></a>
+<a class="card dark" href="phase2.html"><h3>Phase 2: Timeline</h3><small>October 1 – November 20</small></a>
+<a class="card dark" href="phase3.html"><h3>Phase 3: Slides</h3><small>Our presentation</small></a>
+<a class="card dark" href="phase4.html"><h3>Phase 4: Evaluation</h3><small>Results and key insights</small></a>
+<a class="card dark" href="phase5.html"><h3>Phase 5: SDG Connection</h3><small>SDG 3, 4 and 16</small></a>
+</section><div class="pager"><span></span><a class="btn" href="about.html">About Us →</a></div></div>
+
+<script>
+  // Step 1: first question. Step 2: "Are you sure?". Step 3: go to the quiz.
+  (function () {
+    var step = 0;
+    var text = document.getElementById("gateText");
+    function next() {
+      step++;
+      if (step === 1) {
+        text.textContent = "Are you sure?";
+      } else {
+        window.location.href = "quiz.html";
+      }
+    }
+    document.getElementById("gateYes").addEventListener("click", next);
+    document.getElementById("gateNo").addEventListener("click", next);
+  })();
+</script>
+<script src="nav.js"></script></body></html>
